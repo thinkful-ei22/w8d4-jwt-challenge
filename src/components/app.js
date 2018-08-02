@@ -6,7 +6,7 @@ import HeaderBar from './header-bar';
 import LandingPage from './landing-page';
 import Dashboard from './dashboard';
 import RegistrationPage from './registration-page';
-import {refreshAuthToken} from '../actions/auth';
+import {refreshAuthToken, clearAuth} from '../actions/auth';
 
 export class App extends React.Component {
     componentDidUpdate(prevProps) {
@@ -30,6 +30,18 @@ export class App extends React.Component {
         );
     }
 
+    componentDidMount() {
+        console.log('timer should start')
+        this.inactivityTimer();
+    }
+
+    inactivityTimer() {
+        return setTimeout(
+            () => this.props.dispatch(clearAuth()),
+            .10 * 60 * 1000 // 5 minutes
+        );
+    }
+
     stopPeriodicRefresh() {
         if (!this.refreshInterval) {
             return;
@@ -40,7 +52,7 @@ export class App extends React.Component {
 
     render() {
         return (
-            <div className="app">
+            <div onClick={() => clearTimeout(this.inactivityTimer)} className="app">
                 <HeaderBar />
                 <Route exact path="/" component={LandingPage} />
                 <Route exact path="/dashboard" component={Dashboard} />

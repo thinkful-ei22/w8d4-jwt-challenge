@@ -97,6 +97,6 @@ export const refreshAuthToken = () => (dispatch, getState) => {
             // them and sign us out
             dispatch(authError(err));
             dispatch(clearAuth());
-            clearAuthToken(authToken);
+            // clearAuthToken(authToken);
         });
 };
