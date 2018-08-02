@@ -13,8 +13,7 @@ export class App extends React.Component {
         if (!prevProps.loggedIn && this.props.loggedIn) {
             // When we are logged in, refresh the auth token periodically
             this.startPeriodicRefresh();
-            this.inactivityTimer();
-            console.log('Timer should start');
+
         } else if (prevProps.loggedIn && !this.props.loggedIn) {
             // Stop refreshing when we log out
             this.stopPeriodicRefresh();
@@ -32,16 +31,15 @@ export class App extends React.Component {
         );
     }
 
-    // componentDidMount() {
-    //     console.log('timer should start')
-    //     this.inactivityTimer();
-    // }
 
-    inactivityTimer() {
-        this.startTimer = setTimeout(
-            () => this.props.dispatch(clearAuth()),
-            .10 * 60 * 1000 // 5 minutes
-        );
+    inactivityTimer = () => {
+      if(this.startTimer){
+        clearTimeout(this.startTimer)
+      }  
+      this.startTimer = setTimeout(
+          () => this.props.dispatch(clearAuth()),
+          .10 * 60 * 1000 // 5 minutes
+      );
     }
 
     stopPeriodicRefresh() {
@@ -54,12 +52,7 @@ export class App extends React.Component {
 
     render() {
         return (
-            <div onClick={() => {
-              console.log('This.start timer',!this.startTimer);
-              clearTimeout(this.startTimer);
-              console.log('This.start timer',!this.startTimer);
-              this.inactivityTimer();
-            }} 
+            <div onClick={() => this.inactivityTimer()} 
               className="app">
                 <HeaderBar />
                 <Route exact path="/" component={LandingPage} />
