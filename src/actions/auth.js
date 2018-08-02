@@ -33,6 +33,16 @@ export const authError = error => ({
     error
 });
 
+export const SHOW_TIMEOUT_WARNING = 'SHOW_TIMEOUT_WARNING';
+export const showTimeoutWarning = () => ({
+  type: SHOW_TIMEOUT_WARNING
+})
+
+export const HIDE_TIMEOUT_WARNING = 'HIDE_TIMEOUT_WARNING';
+export const hideTimeoutWarning = () => ({
+  type: HIDE_TIMEOUT_WARNING
+})
+
 // Stores the auth token in state and localStorage, and decodes and stores
 // the user data stored in the token
 const storeAuthInfo = (authToken, dispatch) => {

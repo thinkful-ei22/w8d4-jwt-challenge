@@ -3,14 +3,17 @@ import {
     CLEAR_AUTH,
     AUTH_REQUEST,
     AUTH_SUCCESS,
-    AUTH_ERROR
+    AUTH_ERROR,
+    SHOW_TIMEOUT_WARNING,
+    HIDE_TIMEOUT_WARNING
 } from '../actions/auth';
 
 const initialState = {
     authToken: null, // authToken !== null does not mean it has been validated
     currentUser: null,
     loading: false,
-    error: null
+    error: null,
+    timeoutWarning: false
 };
 
 export default function reducer(state = initialState, action) {
@@ -38,6 +41,15 @@ export default function reducer(state = initialState, action) {
             loading: false,
             error: action.error
         });
-    }
+    } else if (action.type === SHOW_TIMEOUT_WARNING){
+        console.log('BEFORE SWITCH',state.timeoutWarning);
+        return Object.assign({}, state, {
+          timeoutWarning: true
+        })
+    } else if (action.type === HIDE_TIMEOUT_WARNING){
+      return Object.assign({}, state, {
+        timeoutWarning: false
+      })
+  }
     return state;
 }

@@ -6,7 +6,7 @@ import HeaderBar from './header-bar';
 import LandingPage from './landing-page';
 import Dashboard from './dashboard';
 import RegistrationPage from './registration-page';
-import {refreshAuthToken, clearAuth} from '../actions/auth';
+import {refreshAuthToken, clearAuth, showTimeoutWarning, hideTimeoutWarning} from '../actions/auth';
 
 export class App extends React.Component {
     componentDidUpdate(prevProps) {
@@ -34,15 +34,14 @@ export class App extends React.Component {
     timer() {
         this.startTimer = setTimeout(
             () => this.props.dispatch(clearAuth()),
-            .25 * 60 * 1000 // 5 minutes
+            5 * 60 * 1000 // 5 minutes
         );
     }
 
     timerBox() {
         this.dialogBox = setTimeout(
-            () => window.confirm('loggin out')
-          ,
-              .10 * 60 * 1000 
+            () => this.props.dispatch(showTimeoutWarning()),
+              4 * 60 * 1000 // 4 minutes
           )
     }
 
@@ -66,14 +65,22 @@ export class App extends React.Component {
     }
 
     render() {
+      let timeoutMessage;
+      if(this.props.timeoutWarning === true){
+        timeoutMessage = <button >Click to stay logged in</button>
+      }
+
         return (
-            <div onClick={() => this.inactivityTimer()} 
+            <div onClick={() => {
+              this.inactivityTimer();
+              this.props.dispatch(hideTimeoutWarning());
+            }} 
               className="app">
                 <HeaderBar />
                 <Route exact path="/" component={LandingPage} />
                 <Route exact path="/dashboard" component={Dashboard}/>
-                <div>{timeoutWarning}</div>
                 <Route exact path="/register" component={RegistrationPage} />
+                <div>{timeoutMessage}</div>
             </div>
         );
     }
@@ -81,7 +88,8 @@ export class App extends React.Component {
 
 const mapStateToProps = state => ({
     hasAuthToken: state.auth.authToken !== null,
-    loggedIn: state.auth.currentUser !== null
+    loggedIn: state.auth.currentUser !== null,
+    timeoutWarning: state.auth.timeoutWarning
 });
 
 // Deal with update blocking - https://reacttraining.com/react-router/web/guides/dealing-with-update-blocking
