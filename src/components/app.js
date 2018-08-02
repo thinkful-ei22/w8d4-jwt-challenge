@@ -31,15 +31,30 @@ export class App extends React.Component {
         );
     }
 
+    timer() {
+        this.startTimer = setTimeout(
+            () => this.props.dispatch(clearAuth()),
+            .25 * 60 * 1000 // 5 minutes
+        );
+    }
+
+    timerBox() {
+        this.dialogBox = setTimeout(
+            () => window.confirm('loggin out')
+          ,
+              .10 * 60 * 1000 
+          )
+    }
 
     inactivityTimer = () => {
       if(this.startTimer){
         clearTimeout(this.startTimer)
-      }  
-      this.startTimer = setTimeout(
-          () => this.props.dispatch(clearAuth()),
-          .10 * 60 * 1000 // 5 minutes
-      );
+      }
+      if(this.dialogBox){
+        clearTimeout(this.dialogBox)
+      }
+      this.timer();
+      this.timerBox();
     }
 
     stopPeriodicRefresh() {
@@ -57,6 +72,7 @@ export class App extends React.Component {
                 <HeaderBar />
                 <Route exact path="/" component={LandingPage} />
                 <Route exact path="/dashboard" component={Dashboard}/>
+                <div>{timeoutWarning}</div>
                 <Route exact path="/register" component={RegistrationPage} />
             </div>
         );
